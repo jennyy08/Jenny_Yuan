@@ -1,28 +1,2 @@
 import { interests } from "@/lib/data";
-
-export default function Interests() {
-  // duplicated once so the marquee loop is seamless
-  const loop = [...interests, ...interests];
-
-  return (
-    <section className="hr-line py-8 -mx-6 sm:-mx-10 overflow-hidden">
-      <div className="bg-pitch">
-        <div className="flex animate-marquee whitespace-nowrap py-4">
-          {loop.map((item, i) => (
-            <div
-              key={`${item.label}-${i}`}
-              className="group flex items-baseline gap-3 px-8 shrink-0"
-            >
-              <span className="font-display text-paper/90 text-sm uppercase tracking-wide">
-                {item.label}
-              </span>
-              <span className="font-mono text-paper/50 text-xs">
-                {item.caption}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+export default function Interests() { return <section id="interests" className="interests"><div className="section-intro"><p className="eyebrow">off the clock</p><h2>the things that<br /><em>keep me curious.</em></h2></div><div className="interest-list">{interests.map((item, i) => <div className="interest" key={item.title}><span className="interest-num">0{i + 1}</span><span className="interest-symbol">{item.symbol}</span><div><h3>{item.title}</h3><p>{item.detail}</p></div></div>)}</div><div className="photo-tease"><p className="eyebrow">photo journal · coming soon</p><p>one day this will be full of tiny moments from everywhere.</p><span>✦</span></div></section>; }

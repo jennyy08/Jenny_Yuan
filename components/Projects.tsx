@@ -1,44 +1,4 @@
+import Image from "next/image";
 import { projects } from "@/lib/data";
 
-export default function Projects() {
-  return (
-    <section id="projects" className="hr-line pt-10 pb-14">
-      <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted mb-6">
-        projects
-      </p>
-      <div className="flex flex-col">
-        {projects.map((project, i) => (
-          <a
-            key={project.title}
-            href={project.live ?? project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`group flex flex-col sm:flex-row sm:items-center gap-4 py-6 ${
-              i !== 0 ? "hr-line" : ""
-            }`}
-          >
-            <div className="sm:w-32 flex items-center gap-3 shrink-0">
-              <span className="font-mono text-xs text-muted">
-                {project.year}
-              </span>
-              <span className="text-[11px] uppercase tracking-wide bg-accent-soft text-accent px-2 py-0.5 rounded-full">
-                {project.tag}
-              </span>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-medium text-ink group-hover:text-accent transition-colors">
-                {project.title}
-              </h3>
-              <p className="text-sm text-muted mt-1 leading-relaxed">
-                {project.description}
-              </p>
-            </div>
-            <span className="hidden sm:block text-muted group-hover:text-accent group-hover:translate-x-1 transition-all">
-              →
-            </span>
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
+export default function Projects() { return <section id="projects" className="projects"><div className="section-intro"><p className="eyebrow">selected work · 01—02</p><h2>made with care<br /><em>and lots of tabs.</em></h2></div><div className="project-grid">{projects.map((project, i) => <article key={project.title} className={`project project-${project.accent}`}><div className="project-image"><Image src={project.images[0]} alt={`${project.title} interface`} fill sizes="(max-width: 800px) 100vw, 52vw" priority={i === 0}/><div className="image-counter">0{i + 1} / 0{projects.length}</div></div><div className="project-copy"><div><p className="eyebrow">{project.tag} · {project.year}</p><h3>{project.title}</h3></div><p>{project.description}</p><div className="project-shots">{project.images.slice(1).map(src => <Image key={src} src={src} width={180} height={110} alt="Project detail"/>)}</div></div></article>)}</div></section>; }

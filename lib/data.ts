@@ -1,86 +1,60 @@
-// Edit everything in this file with your real info — the rest of the
-// site just renders whatever's here.
-
 export const profile = {
   name: "Jenny Yuan",
-  tagline: "computer science student who builds things.",
+  tagline: "computer science student who likes building things.",
   school: "computer science @ university of waterloo",
   schoolUrl: "https://uwaterloo.ca/future-students/programs/computer-science",
-  status: "seeking summer 2027 internship opportunities",
+  status: "seeking summer 2027 internships",
   email: "jyuan042508@gmail.com",
   links: {
     github: "https://github.com/jennyy08",
-    linkedin: "www.linkedin.com/in/jennyyuan08",
-    resume: "/resume.pdf",
+    linkedin: "https://www.linkedin.com/in/jennyyuan08",
   },
 };
 
 export const now = [
   "seeking summer 2027 internship opportunities",
-  "building [project name] — one line on what it does",
+  "turning curious ideas into thoughtful, useful things",
 ];
 
 export const done = [
   "incoming CS @ Waterloo, class of 2031",
-  "built [project], [one line on what it does / stack]",
-  "[hackathon result] @ [event name]",
+  "built civic-tech and sports analytics tools from the ground up",
 ];
 
 export type Project = {
   title: string;
-  tag: string; // e.g. "Dev Tools", "Web App"
+  tag: string;
   year: string;
   description: string;
-  image?: string; // path in /public/images
+  images: string[];
+  accent: "gold" | "blue";
   github?: string;
   live?: string;
 };
 
 export const projects: Project[] = [
   {
-    title: "Project One",
-    tag: "Web App",
+    title: "Local Voice",
+    tag: "Civic Tech",
     year: "2026",
     description:
-      "One or two sentences on what it does and the stack you used. Be specific — name the real tech, the real problem it solves.",
-    image: "/images/project-1.png",
-    github: "https://github.com/yourhandle/project-one",
-    live: "https://project-one.vercel.app",
+      "A civic-tech web app for reporting and tracking local infrastructure issues in real time. Built with React, TypeScript, and Firebase, with live geolocation mapping, atomic votes, role-based access, and OpenAI-powered content moderation.",
+    images: ["/images/local-voice-home.png", "/images/local-voice-report.png"],
+    accent: "gold",
   },
   {
-    title: "Project Two",
-    tag: "Mobile",
+    title: "NBA Archetype Studio",
+    tag: "Sports Analytics",
     year: "2026",
     description:
-      "Same as above — swap in your real project. Keep descriptions tight, one to two sentences max.",
-    image: "/images/project-2.png",
-    github: "https://github.com/yourhandle/project-two",
-  },
-  {
-    title: "Project Three",
-    tag: "Hackathon",
-    year: "2025",
-    description:
-      "A third project slot. Delete or duplicate this block in lib/data.ts to add more.",
-    image: "/images/project-3.png",
-    github: "https://github.com/yourhandle/project-three",
+      "A full-stack NBA analytics platform with client-side PCA and k-means player profiling, live data refresh, role comparisons, and a custom Canvas play simulator with draggable lineups, route drawing, coverage reactions, ball movement, and animation.",
+    images: ["/images/nba-archetypes.png", "/images/nba-play-lab.png", "/images/nba-compare.png"],
+    accent: "blue",
   },
 ];
 
-// The interests strip is meant to be texture, not a theme — a few icons
-// or short labels that hint at who you are outside of code. Swap the
-// labels for whatever's actually true (a club, a sport, a hobby).
-export const interests: { label: string; caption: string }[] = [
-  { label: "soccer", caption: "midfielder, weekend league" },
-  { label: "travel", caption: "12 countries and counting" },
-  { label: "photography", caption: "mostly film, mostly friends" },
-  { label: "coffee", caption: "pour-over enthusiast" },
-];
-
-// Travel / friends photos for the personal strip. Drop real images in
-// /public/images and point these at them.
-export const photos: { src: string; alt: string }[] = [
-  { src: "/images/photo-1.jpg", alt: "Describe this photo" },
-  { src: "/images/photo-2.jpg", alt: "Describe this photo" },
-  { src: "/images/photo-3.jpg", alt: "Describe this photo" },
+export const interests = [
+  { title: "football", detail: "real madrid · psg · matchday energy", symbol: "⚽" },
+  { title: "basketball", detail: "toronto raptors · always watching", symbol: "🏀" },
+  { title: "places", detail: "travelling, wandering, keeping the photos", symbol: "✦" },
 ];

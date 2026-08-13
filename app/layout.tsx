@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name",
-  description: "Computer science student @ University of Waterloo.",
+  title: "Jenny Yuan — Portfolio",
+  description: "Computer science student at the University of Waterloo.",
 };
 
 export default function RootLayout({
