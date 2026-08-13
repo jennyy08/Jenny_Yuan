@@ -1,6 +1,6 @@
 export const profile = {
   name: "Jenny Yuan",
-  tagline: "computer science student who likes building things.",
+  tagline: "studying computer science at the University of Waterloo.",
   school: "computer science @ university of waterloo",
   schoolUrl: "https://uwaterloo.ca/future-students/programs/computer-science",
   status: "seeking summer 2027 internships",
@@ -8,6 +8,7 @@ export const profile = {
   links: {
     github: "https://github.com/jennyy08",
     linkedin: "https://www.linkedin.com/in/jennyyuan08",
+    devpost: "https://devpost.com/jennyy08?ref_content=user-portfolio&ref_feature=portfolio&ref_medium=global-nav",
   },
 };
 
@@ -17,8 +18,8 @@ export const now = [
 ];
 
 export const done = [
-  "incoming CS @ Waterloo, class of 2031",
-  "built civic-tech and sports analytics tools from the ground up",
+  "software engineering intern @ Nokia · summer 2025 — built Python and React tools for internal deployment visibility",
+  "built Local Voice, a civic-tech app for reporting local infrastructure issues",
 ];
 
 export type Project = {
