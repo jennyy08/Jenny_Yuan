@@ -18,7 +18,6 @@ export const now = [
 ];
 
 export const done = [
-  "software engineering intern @ Nokia · summer 2025 — built Python and React tools for internal deployment visibility",
   "built Local Voice, a civic-tech app for reporting local infrastructure issues",
 ];
 
