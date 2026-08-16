@@ -29,6 +29,7 @@ export type Project = {
   description: string;
   images: string[];
   accent: "gold" | "blue";
+  imageClass?: string;
   github?: string;
   live?: string;
 };
@@ -51,6 +52,16 @@ export const projects: Project[] = [
       "A full-stack NBA analytics platform with client-side PCA and k-means player profiling, live data refresh, role comparisons, and a custom Canvas play simulator with draggable lineups, route drawing, coverage reactions, ball movement, and animation.",
     images: ["/images/nba-archetypes.png", "/images/nba-play-lab.png", "/images/nba-compare.png"],
     accent: "blue",
+  },
+  {
+    title: "Auri",
+    tag: "Wearable AI",
+    year: "2026",
+    description:
+      "AI-powered wearable wristband that detects environmental sounds and names, then delivers customizable vibration and visual alerts through a real-time hardware-software system.",
+    images: ["/images/auri-wearable.jpg"],
+    accent: "gold",
+    imageClass: "auri-wearable",
   },
 ];
 
