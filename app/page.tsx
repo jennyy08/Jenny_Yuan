@@ -1,6 +1,30 @@
-import Hero from "@/components/Hero";
-import Nav from "@/components/Nav";
-import NowDone from "@/components/NowDone";
-import Projects from "@/components/Projects";
-import Footer from "@/components/Footer";
-export default function Home() { return <main><Nav /><Hero /><NowDone /><Projects /><Footer /></main>; }
+'use client';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { projects, profile } from '../lib/data';
+const kits = [
+ {name:'Real Madrid', label:'The classic', color:'#f5f3eb', trim:'#333d49', accent:'#526d99', crest:'madrid'},
+ {name:'Paris Saint-Germain', label:'After dark', color:'#23252c', trim:'#e14158', accent:'#b92e48', crest:'psg'},
+ {name:'Bayern Munich', label:'Seeing red', color:'#df263d', trim:'#f1e6bd', accent:'#bc243b', crest:'bayern'},
+ {name:'Real Madrid', label:'Pretty in pink', color:'#d76d92', trim:'#fff2d5', accent:'#ad4571', crest:'madrid'},
+ {name:'Arsenal', label:'True blue', color:'#234c80', trim:'#f5d470', accent:'#2c5799', crest:'arsenal'},
+];
+function Shirt({index}: {index:number}) { const k=kits[index]; return <svg viewBox="0 0 240 260" role="img" aria-label={`${k.label} ${k.name} jersey`}>
+<defs><pattern id={`texture${index}`} width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8" stroke="#fff" strokeOpacity=".08" strokeWidth="2"/></pattern></defs>
+<path d="M77 27L48 37 12 89 45 114 66 89 62 231Q120 244 178 231L174 89 195 114 228 89 192 37 163 27Z" fill={k.color} stroke="#172b3a" strokeWidth="3" strokeLinejoin="round"/>
+<path d="M77 27L48 37 12 89 45 114 66 89 62 231Q120 244 178 231L174 89 195 114 228 89 192 37 163 27Z" fill={`url(#texture${index})`}/>
+<path d="M79 28Q120 77 161 28L148 26Q120 50 92 26Z" fill={k.trim}/>
+<path d="M20 79L51 102M189 102L220 79" stroke={k.trim} strokeWidth="8"/>
+{index!==1 && <path d="M52 41L78 33M48 47L81 37M188 41L162 33M192 47L159 37" stroke={k.trim} strokeWidth="3"/>}
+{index===1 && <path d="M120 59V232" stroke={k.trim} strokeWidth="2"/>}
+{index===2 && <path d="M82 110V227M97 110V230M143 110V230M158 110V227" stroke="#f65e42" strokeOpacity=".3" strokeWidth="6"/>}
+{index===3 && <path d="M72 129L168 190M72 180L168 120" stroke="#f2a1bb" strokeOpacity=".16" strokeWidth="25"/>}
+<image href={`/crests/${k.crest}.png`} x="137" y="65" width="30" height="34"/>
+<path d="M77 84h18m-18 5h13" stroke={k.trim} strokeWidth="3"/>
+<path d="M73 218Q120 227 168 218" fill="none" stroke="#000" strokeOpacity=".1" strokeWidth="2"/>
+</svg> }
+function Pitch({kit}: {kit:number}) {return <div className="pitch" aria-label="Illustrated soccer pitch"><div className="pitch-lines"><i/><b/></div>{[[22,30],[70,25],[46,58],[77,76],[20,77]].map(([x,y],i)=><div key={i} className="player" style={{left:`${x}%`,top:`${y}%`,'--shirt':i%2?kits[kit].trim:kits[kit].color} as CSSProperties}><span/><i/><b/></div>)}<span className="ball">✦</span><span className="pitch-caption">A LITTLE FIELD OF POSSIBILITIES</span></div>}
+export default function Home(){const [selected,setSelected]=useState<number|null>(null); const [entered,setEntered]=useState(false); const kit=selected??0;
+useEffect(()=>{try {const saved=localStorage.getItem('jenny-kit');if(saved!==null && Number(saved)>=0 && Number(saved)<5){setSelected(Number(saved));setEntered(true)}}catch{}},[]);
+function enter(){if(selected===null)return;try{localStorage.setItem('jenny-kit',String(selected))}catch{}setEntered(true);window.scrollTo(0,0)}
+return <div style={{'--accent':kits[kit].accent} as CSSProperties}><div className="sky"><div className="cloud c1"/><div className="cloud c2"/><div className="cloud c3"/></div>
+{!entered?<main className="selection"><header className="picker-header"><a href="mailto:jyuan042508@gmail.com">jenny yuan<span> / portfolio</span></a><span>YOUR VISIT. YOUR COLOURS.</span></header><div className="picker-title"><span className="eyebrow">WELCOME TO MY SIDE OF THE FIELD</span><h1>Choose your <em>kit.</em></h1><p>Five kits. Same me. Pick your colours and come on in.</p></div><div className="kit-grid" role="group" aria-label="Choose a kit">{kits.map((k,i)=><button key={i} className={`kit ${selected===i?'selected':''}`} aria-pressed={selected===i} onClick={()=>setSelected(i)}><span className="kit-number">0{i+1}</span><div className="jersey"><Shirt index={i}/></div><span className="kit-name">{k.name}</span><span className="kit-label">{k.label}</span><span className="radio">{selected===i?'✓':''}</span></button>)}</div><div className="enter-area"><button className="enter" disabled={selected===null} onClick={enter}>Enter the pitch <span>↗</span></button><p>{selected===null?'Make yourself at home. Start with a kit.':`${kits[kit].label}. Good choice. See you on the field.`}</p></div><footer className="picker-footer"><span>COMPUTER SCIENCE @ WATERLOO</span><span>You can switch kits anytime.</span><span>EST. 2026 · ALWAYS BUILDING</span></footer><div className="grass"/></main>:<><header className="nav"><a className="brand" href="#about">jenny yuan<span> ✦</span></a><nav><a href="#about">About</a><a href="#experience">Experience</a><a href="#projects">Projects</a></nav><div className="nav-contact"><a href={`mailto:${profile.email}`}>Email ↗</a><a href={profile.links.github}>GitHub ↗</a><a href={profile.links.linkedin}>LinkedIn ↗</a><button onClick={()=>setEntered(false)}>Change kit ♧</button></div></header><main className="portfolio"><section className="intro" id="about"><div><span className="eyebrow">COMPUTER SCIENCE @ WATERLOO</span><h1>Hi, I’m Jenny.<br/>Always <em>in play.</em></h1><p>I’m a computer science student at the University of Waterloo who likes turning curious ideas into useful things. Usually building something, watching a match, or figuring out what to try next.</p><a className="availability" href={`mailto:${profile.email}`}>● Seeking summer 2027 internships ↗</a></div><Pitch kit={kit}/></section><section id="experience"><div className="section-heading"><span>01 / THE JOURNEY</span><h2>Experience</h2></div><div className="experience"><img src="/images/nokia-logo.png" alt="Nokia"/><div><h3>Software Engineering Intern</h3><p>Nokia</p><p>Built Python and React tools for internal deployment visibility.</p></div><span>Summer 2025</span></div></section><section id="projects"><div className="section-heading"><span>02 / THINGS I'VE BUILT</span><h2>Selected projects</h2></div><div className="projects">{projects.map((p,i)=><article key={p.title}><div className="project-image"><img src={p.images[0]} alt={`${p.title} application preview`}/><span>0{i+1} / {p.tag}</span></div><div className="project-title"><h3>{p.title}</h3><span>{p.year}</span></div><p>{p.description}</p></article>)}</div></section><footer id="contact" className="contact"><span className="eyebrow">03 / NEXT PLAY</span><h2>Let’s make<br/><em>something good.</em></h2><a href={`mailto:${profile.email}`}>{profile.email} ↗</a><div><span>© 2026 Jenny Yuan</span><a href="#about">Back to the top ↑</a></div></footer></main></> }</div>}
