@@ -5,3 +5,29 @@
 
 /* Click-to-pass pitch. */
 .site-entered .nav{padding-top:12px;padding-bottom:12px}.nav-contact button{padding:7px 11px}.full-pitch{cursor:crosshair}.full-pitch .goal{top:31%;height:28%;width:9%;padding:0;z-index:4;cursor:pointer;border:5px solid #fffdeb;border-radius:0;background-color:#e8f3d11c;transition:background-color .2s,box-shadow .2s}.full-pitch .goal-left{left:2%;transform:skewY(-6deg)}.full-pitch .goal-right{right:2%;transform:skewY(6deg)}.full-pitch .goal:hover,.full-pitch .goal:focus-visible{background-color:#fff6;box-shadow:0 0 20px #ffffd866}.field-player{padding:0;border:0;background:none;cursor:pointer;color:inherit;overflow:visible}.field-player:hover .pixel-shirt{filter:brightness(1.15)}.player-bubble{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);padding:7px 9px;background:#fffcef;color:#324d3b;border:2px solid #405d40;box-shadow:3px 3px #395b3829;font:9px monospace;white-space:nowrap;pointer-events:none;animation:bubble-in .2s ease-out}.player-bubble:after{content:'';position:absolute;bottom:-7px;left:calc(50% - 5px);width:9px;height:9px;background:#fffcef;border-right:2px solid #405d40;border-bottom:2px solid #405d40;transform:rotate(45deg)}.free-ball{pointer-events:none;transition:left .65s ease-out,top .65s ease-out,transform .65s ease-out}.goal-announcement{position:absolute;inset:25% 0 auto;text-align:center;z-index:8;pointer-events:none}.goal-announcement>span{display:inline-block;background:var(--kit);color:var(--trim);border:3px solid var(--trim);padding:20px 38px;box-shadow:6px 6px #28483255;font:36px Georgia,serif;transform:rotate(-3deg);animation:bubble-in .2s ease-out}.goal-announcement small{display:block;font:12px monospace;margin-top:10px}.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:7}.confetti i{position:absolute;top:-20px;width:9px;height:15px;background:var(--confetti-color);animation:confetti-fall 2.3s var(--fall-delay) ease-in both}.scroll-field{z-index:5;cursor:pointer}@keyframes bubble-in{from{opacity:0;translate:0 5px}to{opacity:1;translate:0 0}}@keyframes confetti-fall{from{translate:0 -20px;rotate:0deg}to{translate:var(--drift) 650px;rotate:560deg}}@media(max-width:600px){.site-entered .nav{padding:10px 16px;gap:9px}.nav-contact button{padding:6px 9px}.full-pitch .goal{width:13%;height:25%;border-width:3px}.full-pitch .goal-left{left:2%}.full-pitch .goal-right{right:2%}.goal-announcement>span{font-size:28px;padding:18px 24px}.player-bubble{font-size:10px}.field-player{z-index:5}.confetti{z-index:7}}@media(prefers-reduced-motion:reduce){.free-ball{transition:none}.confetti i{animation:none;top:20%;rotate:25deg}.player-bubble,.goal-announcement>span{animation:none}}
+
+.psg-theme img[src="/crests/psg.png"]{filter:grayscale(1)}
+.full-pitch .goal{background:none;border:0;box-shadow:none;transform:none;width:11%;height:32%;top:29%;overflow:visible}
+.full-pitch .goal svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(5px 9px 2px #304d332b)}
+.full-pitch .goal-left{left:1%;transform:none}.full-pitch .goal-right{right:1%;transform:none}.goal-left svg,.goal-right svg{transform:none}
+.full-pitch .goal:hover,.full-pitch .goal:focus-visible{background:none;box-shadow:none}.full-pitch .goal:hover svg{filter:drop-shadow(0 0 5px #fffbc6aa)}
+@media(max-width:600px){.full-pitch .goal{width:16%;height:29%;top:30%}.full-pitch .goal-left{left:0}.full-pitch .goal-right{right:0}}
+
+/* Keep the full goal size while turning its opening across the pitch. */
+.full-pitch .goal{width:15%}.full-pitch .goal-left{left:0}.full-pitch .goal-right{right:0}@media(max-width:600px){.full-pitch .goal{width:20%}}
+
+/* Grass surrounds the touchlines; the shallow nets sit beyond them. */
+.full-pitch .field-markings{width:100%;left:0}
+.full-pitch .goal{width:15%;height:32%;top:29%}
+.full-pitch .goal-left{left:2.6%}.full-pitch .goal-right{right:2.6%}
+.full-pitch .flag-left{left:16.4%}.full-pitch .flag-right{right:16.4%}
+@media(max-width:600px){.full-pitch .goal{width:15%;height:29%;top:30%}.full-pitch .goal-left{left:2.6%}.full-pitch .goal-right{right:2.6%}}
+
+/* Place the back of each net at the edge of the scene. */
+.full-pitch .goal-left{left:-4.625%}.full-pitch .goal-right{right:-4.625%}.full-pitch .flag-left{left:9.15%}.full-pitch .flag-right{right:9.15%}
+
+/* Flagpole bases align with the SVG pitch corners (128/1400, 42/600, 555/600). */
+.full-pitch .corner-flag{height:44px;width:3px;transform:translateX(-50%);pointer-events:none}
+.full-pitch .flag-left{left:9.142857%;right:auto}.full-pitch .flag-right{left:90.857143%;right:auto}
+.full-pitch .flag-near{top:calc(92.5% - 44px);bottom:auto}.full-pitch .flag-far{top:calc(7% - 44px);bottom:auto}
+@media(max-width:600px){.full-pitch .corner-flag{height:30px}.full-pitch .flag-near{top:calc(92.5% - 30px)}.full-pitch .flag-far{top:calc(7% - 30px)}}
