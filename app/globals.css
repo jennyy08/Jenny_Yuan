@@ -43,3 +43,18 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 @media(max-width:1000px){.site-entered .nav{gap:20px;flex-wrap:wrap}.site-entered .nav nav{gap:18px}.site-entered .nav-contact{gap:16px}.field-bio{padding-top:150px}}
 @media(max-width:600px){.site-entered .nav{gap:10px 18px;padding:10px 16px}.site-entered .nav nav{font-size:13px;gap:14px}.site-entered .nav-contact{font-size:13px;width:100%;margin-left:0;gap:10px;flex-wrap:wrap}.nav-contact button{font-size:12px}.field-bio{padding:166px 18px 24px}.field-bio h1{font-size:44px;margin:0 0 12px}.school-line{font-size:17px;max-width:330px;margin:auto;line-height:1.4}.field-bio .rotating-line{font-size:17px}.seeking-line{font-size:12px;max-width:290px;line-height:1.6}.field-intro{min-height:840px}.projects p,.experience p{font-size:15px}.kit-name{font-size:13px}.kit-label{font-size:12px}.picker-title p{font-size:14px}.project-title h3,.experience h3{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.rotating-word{animation:none}}
+
+/* Center the visible phrase, rather than a reserved word-width box. */
+.word-slot{width:auto;text-align:center;vertical-align:baseline}
+/* The kit picker is a single screen, including compact phone layouts. */
+.selection{height:100svh;min-height:0;padding:22px 4vw 32px;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:16px}
+.picker-title{margin:0}.picker-title h1{font-size:clamp(36px,5vw,68px);margin:10px 0}.picker-title p{margin:8px 0 0}
+.kit-grid{min-height:0;align-items:stretch;max-height:390px;align-self:center;height:100%}.kit{min-height:0;padding:12px 8px;overflow:hidden}.jersey{flex:1;min-height:0;display:flex;justify-content:center}.jersey svg{height:100%;width:100%;max-height:260px}.kit-name,.kit-label,.radio,.kit-number{flex-shrink:0}.kit-name{margin:6px 0}.radio{margin-top:10px}.enter-area{margin:0}.picker-footer{margin:0}.enter{padding:13px 24px}
+@media(max-width:600px){.selection{padding:14px 14px 27px;gap:10px}.picker-header>a{font-size:17px}.picker-title h1{font-size:36px;margin:7px 0}.picker-title .eyebrow{font-size:8px;letter-spacing:1px}.picker-title p{font-size:12px;margin:5px 0 0}.kit-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));max-width:460px;max-height:440px;gap:8px}.kit:last-child{grid-column:auto;width:auto;justify-self:stretch}.kit{padding:8px 4px}.kit-name{font-size:10px;line-height:1.2;margin:4px 0;min-height:24px;display:flex;align-items:center;justify-content:center}.kit-label{font-size:9px}.kit-number{font-size:8px;margin-left:2px}.radio{width:15px;height:15px;font-size:10px;margin-top:6px}.jersey{width:100%}.enter{font-size:14px;padding:11px 20px}.picker-footer span:nth-child(2){font-size:11px}}
+@media(max-height:650px){.selection{gap:7px;padding-top:10px}.picker-title h1{font-size:32px;margin:4px 0}.picker-title .eyebrow{display:none}.picker-title p{font-size:12px}.kit-label{display:none}.radio{margin-top:4px}.kit-name{font-size:10px;margin:3px 0}.enter{padding:9px 20px}.picker-footer{font-size:9px}}
+
+/* Keep the picker hint centered independently of the side footer labels. */
+.picker-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center}
+.picker-footer>span:nth-child(2){grid-column:2;text-align:center}
+.picker-footer>span:last-child{justify-self:end}
+@media(max-width:600px){.picker-footer{grid-template-columns:1fr}.picker-footer>span:nth-child(2){grid-column:1;justify-self:center}}
