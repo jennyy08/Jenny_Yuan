@@ -67,3 +67,8 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 .scroll-field span{display:block;font-size:30px;line-height:1;animation:scroll-float 2.8s ease-in-out infinite}
 @keyframes scroll-float{0%,100%{transform:translateY(-4px)}50%{transform:translateY(5px)}}
 @media(prefers-reduced-motion:reduce){.rotating-word{animation:none;opacity:1}.scroll-field span{animation:none}}
+
+/* Compact contact footer. */
+.site-entered .contact{padding-top:40px;padding-bottom:22px}
+.contact h2{font-size:clamp(30px,4vw,46px);line-height:1.15;margin:12px 0 18px}
+.contact>div{margin-top:36px}
