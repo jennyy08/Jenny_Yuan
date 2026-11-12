@@ -34,7 +34,8 @@ function GoalNet({side}: {side:'left'|'right'}) {
  </g></svg>
 }
 function Pitch({kit}: {kit:number}) {
- const [ball,setBall]=useState({x:40,y:74,turn:0});
+ const field=useRef<HTMLDivElement>(null);
+ const [ball,setBall]=useState({x:40,y:74,turn:0,ms:0,angle:0});
  const [calling,setCalling]=useState(-1);
  const [scored,setScored]=useState(false);
  const locked=useRef(false);
@@ -46,17 +47,25 @@ function Pitch({kit}: {kit:number}) {
  },[]);
  function pass(x:number,y:number,goal=false){
   if(locked.current)return;
-  setBall(old=>({x:Math.max(3,Math.min(97,x)),y:Math.max(6,Math.min(88,y)),turn:old.turn+1}));
+  const node=field.current;
+  if(!node)return;
+  const ballNode=node.querySelector('.free-ball') as HTMLElement;
+  x=Math.max(3,Math.min(97,x));y=Math.max(6,Math.min(88,y));
+  const dx=node.clientWidth*x/100-parseFloat(getComputedStyle(ballNode).left);
+  const dy=node.clientHeight*y/100-parseFloat(getComputedStyle(ballNode).top);
+  const distance=Math.hypot(dx,dy);
+  const ms=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:Math.min(1900,290+distance*1.1);
+  setBall(old=>({x,y,turn:old.turn+Math.min(3.25, Math.max(.18,distance/245)),ms,angle:Math.atan2(dy,dx)*180/Math.PI}));
   setCalling(-1);
   if(goal){
    locked.current=true;
-   timers.current.push(setTimeout(()=>setScored(true),650));
-   timers.current.push(setTimeout(()=>{setScored(false);setBall({x:40,y:74,turn:0});locked.current=false},3300));
+   timers.current.push(setTimeout(()=>setScored(true),ms));
+   timers.current.push(setTimeout(()=>{setScored(false);setBall({x:40,y:74,turn:0,ms:0,angle:0});locked.current=false},ms+2400));
   }
  }
  return <div className="field-world">
   <div className="horizon" aria-hidden="true"><div className="trees trees-left"/><div className="trees trees-right"/><div className="club-banner"><img src={`/crests/${kits[kit].crest}.png`} alt=""/><span>{kits[kit].name.toUpperCase()}</span><img src={`/crests/${kits[kit].crest}.png`} alt=""/></div></div>
-  <div className="full-pitch" onClick={event=>{
+  <div ref={field} className="full-pitch" onClick={event=>{
    if((event.target as HTMLElement).closest('button,a'))return;
    const bounds=event.currentTarget.getBoundingClientRect();
    pass((event.clientX-bounds.left)/bounds.width*100,(event.clientY-bounds.top)/bounds.height*100);
@@ -64,7 +73,8 @@ function Pitch({kit}: {kit:number}) {
    <svg className="field-markings" viewBox="0 0 1400 600" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#eff7d5" strokeOpacity=".65" strokeWidth="3"><path d="M128 42H1272V555H128Z M700 42V555"/><ellipse cx="700" cy="266" rx="128" ry="93"/><path d="M128 180H240V375H128M1272 180H1160V375H1272 M128 120H340V438H128 M1272 120H1060V438H1272"/><path d="M340 200Q415 277 340 365M1060 200Q985 277 1060 365"/></g><circle cx="700" cy="266" r="5" fill="#eff7d5"/></svg>
    <button className="goal goal-left" aria-label="Shoot into the left goal" onClick={()=>pass(6,45,true)}><GoalNet side="left"/></button><button className="goal goal-right" aria-label="Shoot into the right goal" onClick={()=>pass(94,45,true)}><GoalNet side="right"/></button>
    {[['18','28'],['38','61'],['57','24'],['76','59'],['79','22']].map(([x,y],i)=><button key={i} type="button" className={`field-player player-${i}`} aria-label={`Pass to player ${[7,10,8,11,3][i]}`} onClick={()=>pass(Number(x)+2,Number(y)+13)} style={{left:`${x}%`,top:`${y}%`,'--skin':['#dba67d','#a76e4b','#f2c7a2','#c68b5f','#edba8d'][i]} as CSSProperties}>{calling===i && !scored && <span className="player-bubble">{i%2?"I’m open!":"Pass to me!"}</span>}<span className="pixel-head"/><span className="pixel-shirt"><small>{[7,10,8,11,3][i]}</small></span><span className="pixel-legs"/><span className="player-shadow"/></button>)}
-   <div className="football free-ball" aria-hidden="true" style={{left:`${ball.x}%`,top:`${ball.y}%`,transform:`translate(-50%,-50%) rotate(${ball.turn*360}deg)`}}><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#fff9e9" stroke="#284334" strokeWidth="2"/><path d="M16 9L23 14 20 22H12L9 14Z M4 8L9 6 11 2 M24 5L27 10 30 11 M4 22L10 24 12 30 M24 25L28 21" fill="#314a3b"/></svg></div>
+   <div className="ball-traces" aria-hidden="true">{[3,2,1].map(n=><i key={n} style={{left:`${ball.x}%`,top:`${ball.y}%`,width:5+n,height:5+n,opacity:.85-n*.13,transitionDuration:`${ball.ms}ms`,transitionDelay:`${ball.ms?n*28:0}ms`}}/>)}</div>
+   <div className="football free-ball" aria-hidden="true" style={{left:`${ball.x}%`,top:`${ball.y}%`,transform:'translate(-50%,-50%)',transitionDuration:`${ball.ms}ms`}}><svg style={{transform:`rotate(${ball.turn*360}deg)`,transitionDuration:`${ball.ms}ms`}} viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#fffdf4" stroke="#26362d" strokeWidth="1.5"/><g fill="#25342e" stroke="#25342e" strokeWidth=".6">{[0,72,144,216,288].map(d=><g key={d} transform={`rotate(${d} 16 16)`}><path d="M12 2Q16 0 20 2L19 5H14Z"/><path d="M16 5L16 10" fill="none"/></g>)}<path d="M16 10L22 14L20 21H12L10 14Z"/></g></svg></div>
    <div className="goal-announcement" role="status" aria-live="polite">{scored && <span>You scored! <small>What a finish.</small></span>}</div>
    {scored && <div className="confetti" aria-hidden="true">{Array.from({length:36},(_,i)=><i key={i} style={{left:`${(i*29)%100}%`,'--fall-delay':`${(i%7)*.07}s`,'--confetti-color':i%3===0?'var(--kit)':i%3===1?'var(--trim)':'#fff4b8','--drift':`${i%2?80:-80}px`} as CSSProperties}/>)}</div>}
    <div className="corner-flag flag-left flag-near" aria-hidden="true"/><div className="corner-flag flag-right flag-near" aria-hidden="true"/><div className="corner-flag flag-left flag-far" aria-hidden="true"/><div className="corner-flag flag-right flag-far" aria-hidden="true"/>
@@ -73,7 +83,8 @@ function Pitch({kit}: {kit:number}) {
  </div>
 }
 const introWords = ['learning', 'building', 'experimenting', 'exploring', 'improving'];
-function Intro() {
+function Intro({onField=false}:{onField?:boolean}) {
+ const Name=onField?"h2":"h1";
  const [word,setWord]=useState(0);
  useEffect(()=>{
   const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -82,10 +93,32 @@ function Intro() {
   sync();motion.addEventListener('change',sync);
   return ()=>{if(timer)clearInterval(timer);motion.removeEventListener('change',sync)};
  },[]);
- return <div className="field-bio"><h1>Jenny Yuan</h1><a className="school-line" href={profile.schoolUrl} target="_blank" rel="noopener noreferrer">Computer Science @ University of Waterloo</a><p className="rotating-line" aria-label="Always learning, building, experimenting, exploring, and improving."><span aria-hidden="true">Always <span className="word-slot"><span key={word} className="rotating-word">{introWords[word]}.</span></span></span></p><a className="seeking-line" href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Seeking Summer 2027 internship opportunities</a></div>
+ return <div className="field-bio"><Name>Jenny Yuan</Name><a className="school-line" href={profile.schoolUrl} target="_blank" rel="noopener noreferrer">Computer Science @ University of Waterloo</a><p className="rotating-line" aria-label="Always learning, building, experimenting, exploring, and improving."><span aria-hidden="true">Always <span className="word-slot"><span key={word} className="rotating-word">{introWords[word]}.</span></span></span></p><a className="seeking-line" href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Seeking Summer 2027 internship opportunities</a></div>
 }
-export default function Home(){const [selected,setSelected]=useState<number|null>(null); const [entered,setEntered]=useState(false); const kit=selected??0;
-useEffect(()=>{try {const saved=localStorage.getItem('jenny-kit');if(saved!==null && Number.isInteger(Number(saved)) && Number(saved)>=0 && Number(saved)<5){setSelected(Number(saved));setEntered(true)}}catch{}},[]);
-function enter(){if(selected===null)return;try{localStorage.setItem('jenny-kit',String(selected))}catch{}setEntered(true);window.scrollTo(0,0)}
-return <div className={`${entered?'site-entered':''} ${kit===1?'psg-theme':''}`} style={{'--accent':kits[kit].accent,'--kit':kits[kit].color,'--trim':kits[kit].trim} as CSSProperties}><div className="sky"><div className="cloud c1"/><div className="cloud c2"/><div className="cloud c3"/></div>
-{!entered?<main className="selection"><header className="picker-header"><a href="mailto:jyuan042508@gmail.com" target="_blank" rel="noopener noreferrer">jenny yuan<span> / portfolio</span></a><span>YOUR VISIT. YOUR COLOURS.</span></header><div className="picker-title"><span className="eyebrow">WELCOME TO MY SIDE OF THE FIELD</span><h1>Choose your <em>kit.</em></h1><p>A few of my favourite teams and kits. Pick one to wear.</p></div><div className="kit-grid" role="group" aria-label="Choose a kit">{kits.map((k,i)=><button key={i} className={`kit ${selected===i?'selected':''}`} aria-pressed={selected===i} onClick={()=>setSelected(i)}><span className="kit-number">0{i+1}</span><div className="jersey"><Shirt index={i}/></div><span className="kit-name">{k.name}</span><span className="kit-label">{k.label}</span><span className="radio">{selected===i?'✓':''}</span></button>)}</div><div className="enter-area"><button className="enter" disabled={selected===null} onClick={enter}>Enter the pitch</button></div><footer className="picker-footer"><span>COMPUTER SCIENCE @ WATERLOO</span><span>You can switch kits anytime.</span><span>EST. 2026</span></footer><div className="grass"/></main>:<><header className="nav"><a className="brand" href="#about">jenny yuan<span> ✦</span></a><nav><a href="#about">About</a><a href="#experience">Experience</a><a href="#projects">Projects</a></nav><div className="nav-contact"><a href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer">Email ↗</a><a href={profile.links.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><button onClick={()=>{setEntered(false);window.scrollTo(0,0)}}><img src={`/crests/${kits[kit].crest}.png`} alt=""/> Change kit</button></div></header><main className="portfolio"><section className="intro field-intro" id="about"><Intro/><Pitch kit={kit}/></section><section id="experience"><div className="section-heading"><span>01 / THE JOURNEY</span><h2>Experience</h2></div><div className="experience"><img src="/images/nokia-logo.png" alt="Nokia"/><div><h3>Software Engineering Intern</h3><p>Nokia</p><p>Built Python and React tools for internal deployment visibility.</p></div><span>Summer 2025</span></div></section><section id="projects"><div className="section-heading"><span>02 / THINGS I'VE BUILT</span><h2>Selected projects</h2></div><div className="projects">{projects.map((p,i)=><article key={p.title}><div className="project-image"><img src={p.images[0]} alt={`${p.title} application preview`}/><span>0{i+1} / {p.tag}</span></div><div className="project-title"><h3>{p.title}</h3><span>{p.year}</span></div><p>{p.description}</p></article>)}</div></section><footer id="contact" className="contact"><span className="eyebrow">03 / CONNECT</span><h2>Let’s connect.</h2><a href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer">{profile.email} ↗</a><div><span>© 2026 Jenny Yuan</span><a href="#about">Back to the top ↑</a></div></footer></main></> }</div>}
+function KitBar({kit,choose}:{kit:number;choose:(i:number)=>void}){
+ const [preview,setPreview]=useState<number|null>(null);
+ const timer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
+ function clear(){clearTimeout(timer.current);setPreview(null)}
+ useEffect(()=>()=>clearTimeout(timer.current),[]);
+ return <div className="field-kits" role="group" aria-label="Choose a kit" onPointerLeave={clear} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))clear()}} onKeyDown={e=>{if(e.key==='Escape')clear()}}>
+ {preview!==null && <div className="kit-peek" aria-hidden="true"><Shirt index={preview}/><strong>{kits[preview].name}</strong></div>}
+ {kits.map((k,i)=><button key={k.label} type="button" aria-label={k.name+' · '+k.label} aria-pressed={kit===i} style={{'--fabric':k.color,'--stripe':k.trim} as CSSProperties} onPointerEnter={e=>{if(e.pointerType==='mouse'){clear();timer.current=setTimeout(()=>setPreview(i),500)}}} onFocus={e=>{if(e.currentTarget.matches(':focus-visible'))setPreview(i)}} onClick={()=>{clearTimeout(timer.current);choose(i);setPreview(i);timer.current=setTimeout(()=>setPreview(null),1500)}}><i/></button>)}</div>
+}
+export default function Home(){
+ const story=useRef<HTMLDivElement>(null);
+ useEffect(()=>{
+  const el=story.current;if(!el)return;
+  function update(){
+   if(!el)return;
+   const progress=Math.max(0,Math.min(1,-el.getBoundingClientRect().top/(1.15*el.clientHeight/2.75)));
+   el.style.setProperty('--descent',String(progress));
+   el.style.setProperty('--approach',String(Math.sin(Math.PI*Math.max(0,(progress-.25)/.75))));
+   el.dataset.landed=String(progress>.85 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+  update();window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);
+  return ()=>{window.removeEventListener('scroll',update);window.removeEventListener('resize',update)};
+ },[]);
+ const [kit,setKit]=useState(0);
+ useEffect(()=>{try{const value=Number(localStorage.getItem('jenny-kit'));if(Number.isInteger(value)&&value>=0&&value<kits.length)setKit(value)}catch{}},[]);
+ function choose(i:number){setKit(i);try{localStorage.setItem('jenny-kit',String(i))}catch{}}
+ return <div className={`site-entered ${kit===1?'psg-theme':''}`} style={{'--accent':kits[kit].accent,'--kit':kits[kit].color,'--trim':kits[kit].trim} as CSSProperties}><header className="nav"><a className="brand" href="#about">jenny yuan<span> ✦</span></a><nav><a href="#about">About</a><a href="#experience">Experience</a><a href="#projects">Projects</a></nav><div className="nav-contact"><a href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer">Email ↗</a><a href={profile.links.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div></header><main className="portfolio"><div ref={story} className="field-story" id="about"><div className="pitch-marker" id="pitch"/><div className="story-frame"><div className="sky-layers" aria-hidden="true">{['a','b','c','d','e','f'].map(n=><i key={n} className={'sky-wisp sky-'+n}/>)}</div><div className="story-copy"><Intro/><a className="built-link" href="#projects">See what I built ↗</a></div><div className="story-grass"><Pitch kit={kit}/><KitBar kit={kit} choose={choose}/></div></div></div><section id="experience"><div className="section-heading"><span>01 / THE JOURNEY</span><h2>Experience</h2></div><div className="experience"><img src="/images/nokia-logo.png" alt="Nokia"/><div><h3>Software Engineering Intern</h3><p>Nokia</p><p>Built Python and React tools for internal deployment visibility.</p></div><span>Summer 2025</span></div></section><section id="projects"><div className="section-heading"><span>02 / THINGS I'VE BUILT</span><h2>Selected projects</h2></div><div className="projects">{projects.map((p,i)=><article key={p.title}><div className="project-image"><img src={p.images[0]} alt={`${p.title} application preview`}/><span>0{i+1} / {p.tag}</span></div><div className="project-title"><h3>{p.title}</h3><span>{p.year}</span></div><p>{p.description}</p></article>)}</div></section><footer id="contact" className="contact"><span className="eyebrow">03 / CONNECT</span><h2>Let’s connect.</h2><a href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer">{profile.email} ↗</a><div><span>© 2026 Jenny Yuan</span><a href="#about">Back to the top ↑</a></div></footer></main></div>}
