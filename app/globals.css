@@ -90,7 +90,7 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 .story-frame .sky-c,.story-frame .sky-d{--rise:-105vh}
 .sky-layers::before,.sky-layers::after{content:"";position:absolute;bottom:-17%;height:55px;width:34%;color:#f5fcfd;background:currentColor;box-shadow:36px -20px currentColor,88px -39px currentColor,136px -17px currentColor;transform:translateY(calc(-126vh * var(--descent)));opacity:.92}
 .sky-layers::before{left:-16%}.sky-layers::after{right:-12%;bottom:-35%;height:68px;transform:translateY(calc(-167vh * var(--descent)))}
-.story-grass{transform-origin:50% 100%;transform:translateY(calc(106% * (1 - var(--descent)))) scale(calc(.79 + .21 * var(--descent)))}
+.story-grass{transform-origin:50% 100%;transform:translateY(calc(106% * (1 - var(--descent))))}
 .story-copy .built-link{opacity:clamp(0,calc(1.6 - 2.2 * var(--descent)),1)}
 .field-story[data-landed=true] .built-link{visibility:hidden}
 .field-player{translate:calc(var(--approach,0) * var(--run,42px)) calc(var(--approach,0) * -18px);animation:none}
@@ -98,3 +98,12 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 }
 .ball-traces{position:absolute;inset:0;pointer-events:none;z-index:2}.ball-traces i{position:absolute;transform:translate(-50%,-50%);border-radius:50%;background:#fff5c8;box-shadow:0 0 2px #fff9dc;transition-property:left,top;transition-timing-function:ease-out}
 @media(prefers-reduced-motion:reduce){.ball-traces{display:none}}
+
+/* Project both goal mouths and flags onto the tapered end lines. */
+.full-pitch .goal.goal-left,.full-pitch .goal.goal-right{width:13.571429%;height:40%;top:18.333333%;clip-path:polygon(22% 68%,48% 18%,88% 14%,86% 51%,60% 100%,22% 100%)}
+.full-pitch .goal.goal-left{left:0}.full-pitch .goal.goal-right{right:0;clip-path:polygon(78% 68%,52% 18%,12% 14%,14% 51%,40% 100%,78% 100%)}
+.full-pitch .flag-far.flag-left{left:16.428571%}.full-pitch .flag-far.flag-right{left:83.571429%}
+.full-pitch .flag-near.flag-left{left:1.785714%}.full-pitch .flag-near.flag-right{left:98.214286%}.flag-right:before{left:auto;right:3px}
+.story-copy{--intro-zoom:calc(1.32 - .32 * var(--descent));scale:var(--intro-zoom);transform-origin:50% 50%;width:calc(100% / var(--intro-zoom));margin-inline:auto}
+@media(max-width:600px){.story-copy{--intro-zoom:calc(1.17 - .17 * var(--descent))}}
+@media(prefers-reduced-motion:reduce){.story-copy{scale:1;width:100%}}

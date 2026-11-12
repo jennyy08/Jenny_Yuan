@@ -23,14 +23,14 @@ function Shirt({index}: {index:number}) { const k=kits[index]; return <svg viewB
 <path d="M73 218Q120 227 168 218" fill="none" stroke="#000" strokeOpacity=".1" strokeWidth="2"/>
 </svg> }
 function GoalNet({side}: {side:'left'|'right'}) {
- return <svg viewBox="0 0 120 160" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id={`net-${side}`} width="9" height="9" patternUnits="userSpaceOnUse"><path d="M9 0H0V9" fill="none" stroke="#f4f2d9" strokeWidth="1" opacity=".65"/></pattern></defs>
- <g transform={side==='left'?'translate(120 0) scale(-1 1)':undefined}>
- <path d="M10 18L43 12 83 62 50 68V150L10 100Z" fill="#274732" opacity=".17"/>
- <path d="M10 18L43 12 83 62 50 68Z M43 12L83 62V144L43 94Z M50 68L83 62V144L50 150Z" fill={`url(#net-${side})`} stroke="#d1dac5" strokeWidth="2"/>
- <path d="M10 100L43 94L83 144L50 150" fill={`url(#net-${side})`} stroke="#d1dac5" strokeWidth="2"/>
- <path d="M10 100V18L50 68V150" fill="none" stroke="#42583d" strokeWidth="8" strokeLinejoin="round"/>
- <path d="M10 100V18L50 68V150" fill="none" stroke="#fffdec" strokeWidth="5" strokeLinejoin="round"/>
- 
+ // The button uses the same 1400 × 600 coordinates as the pitch:
+ // its top is y=110, so the post feet land at (158,222) and (110,342).
+ return <svg viewBox="0 0 190 240" preserveAspectRatio="none" aria-hidden="true">
+ <defs><pattern id={`net-${side}`} width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 5L5 0 10 5 5 10Z" fill="none" stroke="#f9f7dc" strokeWidth=".9"/></pattern></defs>
+ <g transform={side==='right'?'translate(190 0) scale(-1 1)':undefined}>
+ <path d="M158 44L96 53 48 173 110 164Z M96 53L48 173V232L96 112Z M48 173L110 164V232H48Z" fill={`url(#net-${side})`} stroke="#cfdbc9" strokeWidth="2"/>
+ <path d="M158 112V44L110 164V232" fill="none" stroke="#42583d" strokeWidth="7" strokeLinejoin="round"/>
+ <path d="M158 112V44L110 164V232" fill="none" stroke="#fffdec" strokeWidth="4" strokeLinejoin="round"/>
  </g></svg>
 }
 function Pitch({kit}: {kit:number}) {
@@ -70,8 +70,8 @@ function Pitch({kit}: {kit:number}) {
    const bounds=event.currentTarget.getBoundingClientRect();
    pass((event.clientX-bounds.left)/bounds.width*100,(event.clientY-bounds.top)/bounds.height*100);
   }} aria-label={`Soccer field with players wearing the ${kits[kit].label} kit`}>
-   <svg className="field-markings" viewBox="0 0 1400 600" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#eff7d5" strokeOpacity=".65" strokeWidth="3"><path d="M128 42H1272V555H128Z M700 42V555"/><ellipse cx="700" cy="266" rx="128" ry="93"/><path d="M128 180H240V375H128M1272 180H1160V375H1272 M128 120H340V438H128 M1272 120H1060V438H1272"/><path d="M340 200Q415 277 340 365M1060 200Q985 277 1060 365"/></g><circle cx="700" cy="266" r="5" fill="#eff7d5"/></svg>
-   <button className="goal goal-left" aria-label="Shoot into the left goal" onClick={()=>pass(6,45,true)}><GoalNet side="left"/></button><button className="goal goal-right" aria-label="Shoot into the right goal" onClick={()=>pass(94,45,true)}><GoalNet side="right"/></button>
+   <svg className="field-markings" viewBox="0 0 1400 600" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#eff7d5" strokeOpacity=".65" strokeWidth="3"><path d="M230 42H1170L1375 555H25Z M700 42V555"/><ellipse cx="700" cy="266" rx="128" ry="93"/><path d="M175 180H268L207 375H97 M1225 180H1132L1193 375H1303 M199 120H369L286 438H72 M1201 120H1031L1114 438H1328"/><path d="M348 200Q407 277 305 365 M1052 200Q993 277 1095 365"/></g><circle cx="700" cy="266" r="5" fill="#eff7d5"/></svg>
+   <button className="goal goal-left" aria-label="Shoot into the left goal" onClick={()=>pass(8,43,true)}><GoalNet side="left"/></button><button className="goal goal-right" aria-label="Shoot into the right goal" onClick={()=>pass(92,43,true)}><GoalNet side="right"/></button>
    {[['18','28'],['38','61'],['57','24'],['76','59'],['79','22']].map(([x,y],i)=><button key={i} type="button" className={`field-player player-${i}`} aria-label={`Pass to player ${[7,10,8,11,3][i]}`} onClick={()=>pass(Number(x)+2,Number(y)+13)} style={{left:`${x}%`,top:`${y}%`,'--skin':['#dba67d','#a76e4b','#f2c7a2','#c68b5f','#edba8d'][i]} as CSSProperties}>{calling===i && !scored && <span className="player-bubble">{i%2?"I’m open!":"Pass to me!"}</span>}<span className="pixel-head"/><span className="pixel-shirt"><small>{[7,10,8,11,3][i]}</small></span><span className="pixel-legs"/><span className="player-shadow"/></button>)}
    <div className="ball-traces" aria-hidden="true">{[3,2,1].map(n=><i key={n} style={{left:`${ball.x}%`,top:`${ball.y}%`,width:5+n,height:5+n,opacity:.85-n*.13,transitionDuration:`${ball.ms}ms`,transitionDelay:`${ball.ms?n*28:0}ms`}}/>)}</div>
    <div className="football free-ball" aria-hidden="true" style={{left:`${ball.x}%`,top:`${ball.y}%`,transform:'translate(-50%,-50%)',transitionDuration:`${ball.ms}ms`}}><svg style={{transform:`rotate(${ball.turn*360}deg)`,transitionDuration:`${ball.ms}ms`}} viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#fffdf4" stroke="#26362d" strokeWidth="1.5"/><g fill="#25342e" stroke="#25342e" strokeWidth=".6">{[0,72,144,216,288].map(d=><g key={d} transform={`rotate(${d} 16 16)`}><path d="M12 2Q16 0 20 2L19 5H14Z"/><path d="M16 5L16 10" fill="none"/></g>)}<path d="M16 10L22 14L20 21H12L10 14Z"/></g></svg></div>
