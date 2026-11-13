@@ -58,9 +58,9 @@ export const projects: Project[] = [
     "year": "2026",
     "accent": "blue",
     "images": [
-      "/previews/bump.webp"
+      "/previews/bump-screen.webp"
     ],
-    "video": "/previews/bump.mp4",
+    "video": "/previews/bump-screen.mp4",
     "award": "WiE hackathon winner",
     "github": "https://github.com/lindaeq/BUMPitup",
     "devpost": "https://devpost.com/software/bump-it-up"
@@ -97,7 +97,7 @@ export const projects: Project[] = [
     "year": "2026",
     "accent": "blue",
     "images": [
-      "/previews/auri.webp"
+      "/previews/auri-hardware.webp"
     ],
     "video": "/previews/auri.mp4",
     "github": "https://github.com/lindaeq/auri",

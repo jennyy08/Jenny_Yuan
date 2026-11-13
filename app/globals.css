@@ -118,3 +118,20 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 @media(max-width:650px){.work-gallery{display:flex;flex-direction:column;gap:32px}.work-aircad .work-media{height:auto;aspect-ratio:16/9}.work-bumpitup .work-media{height:320px}}
 
 .work-title-links,.work-title-links>div{display:flex;align-items:center;gap:6px}.work-title-links{justify-content:space-between}.work-title-links a{display:grid;place-items:center;width:34px;height:34px;color:#52655b;border-radius:50%}.work-title-links a:hover{background:#e6ebdf;color:var(--accent)}.work-title-links svg{width:19px;height:19px}
+
+@media(prefers-reduced-motion:no-preference){
+ .story-copy{margin-top:calc(4.5svh * (1 - var(--descent)))}
+ .retriever-run{display:block;position:absolute;top:8%;left:-65px;width:54px;z-index:2;pointer-events:none}
+ [data-dog-run=true] .retriever-run{animation:retriever-cross 3.8s linear forwards}
+ .retriever-run svg{display:block;width:100%;animation:retriever-hop .28s ease-in-out infinite alternate}
+ .dog-paws,.dog-stride{transform-box:fill-box;transform-origin:50% 0;animation:retriever-step .28s steps(3) infinite alternate}.dog-stride{animation-direction:alternate-reverse}
+}
+@keyframes retriever-cross{to{transform:translateX(calc(100vw + 95px))}}
+@keyframes retriever-step{from{transform:rotate(-16deg)}to{transform:rotate(19deg)}}
+@keyframes retriever-hop{to{transform:translateY(-7px) rotate(-3deg)}}
+@media(prefers-reduced-motion:reduce){.retriever-run{display:none}}
+
+.work-bumpitup .work-media :is(img,video){position:absolute;inset:0;margin:auto;height:94%;width:auto;aspect-ratio:500/1080;object-fit:contain;border-radius:11% / 5%;background:#faf6f3}
+.work-bumpitup .work-media video{object-fit:contain;clip-path:inset(0 round 11% / 5%)}
+@media(prefers-reduced-motion:no-preference){.retriever-run svg{animation:lab-bound .23s ease-in-out infinite alternate}.dog-paws,.dog-stride{animation-duration:.23s}}
+@keyframes lab-bound{from{transform:translateY(1px) rotate(2deg)}to{transform:translateY(-7px) rotate(-3deg)}}
