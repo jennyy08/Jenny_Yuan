@@ -29,39 +29,92 @@ export type Project = {
   images: string[];
   accent: "gold" | "blue";
   imageClass?: string;
+  award?: string;
+  video?: string;
+  devpost?: string;
   github?: string;
   live?: string;
 };
 
 export const projects: Project[] = [
   {
-    title: "Local Voice",
-    tag: "Civic Tech",
-    year: "2026",
-    description:
-      "A civic-tech web app for reporting and tracking local infrastructure issues in real time. Built with React, TypeScript, and Firebase, with live geolocation mapping, atomic votes, role-based access, and OpenAI-powered content moderation.",
-    images: ["/images/local-voice-home.png", "/images/local-voice-report.png"],
-    accent: "gold",
+    "title": "AirCAD",
+    "tag": "Spatial CAD",
+    "description": "Sketch in midair with a tracked pen, speak a dimension, and pull the outline into a 3D solid. Export the model to FreeCAD to keep editing.",
+    "year": "2026",
+    "accent": "blue",
+    "images": [
+      "/previews/aircad.webp"
+    ],
+    "video": "/previews/aircad.mp4",
+    "award": "Hack the North semifinalist",
+    "github": "https://github.com/changkevin51/AirCad",
+    "devpost": "https://devpost.com/software/aircad"
   },
   {
-    title: "NBA Archetype Studio",
-    tag: "Sports Analytics",
-    year: "2026",
-    description:
-      "A full-stack NBA analytics platform with client-side PCA and k-means player profiling, live data refresh, role comparisons, and a custom Canvas play simulator with draggable lineups, route drawing, coverage reactions, ball movement, and animation.",
-    images: ["/images/nba-archetypes.png", "/images/nba-play-lab.png", "/images/nba-compare.png"],
-    accent: "blue",
+    "title": "BUMPitup",
+    "tag": "Physiotherapy",
+    "description": "Patients follow care-team routines and track movement with a camera or wristband. After each session, they log how they feel so their provider can adjust the next one.",
+    "year": "2026",
+    "accent": "blue",
+    "images": [
+      "/previews/bump.webp"
+    ],
+    "video": "/previews/bump.mp4",
+    "award": "WiE hackathon winner",
+    "github": "https://github.com/lindaeq/BUMPitup",
+    "devpost": "https://devpost.com/software/bump-it-up"
   },
   {
-    title: "Auri",
-    tag: "Wearable AI",
-    year: "2026",
-    description:
-      "AI-powered wearable wristband that detects environmental sounds and names, then delivers customizable vibration and visual alerts through a real-time hardware-software system.",
-    images: ["/images/auri-wearable.jpg"],
-    accent: "gold",
-    imageClass: "auri-wearable",
+    "title": "Touchline",
+    "tag": "Computer vision",
+    "description": "Practice a soccer drill, then replay it with the ball’s path marked on screen. Touchline estimates juggling touches and toe taps so players can check the count themselves.",
+    "year": "2026",
+    "accent": "blue",
+    "images": [
+      "/previews/touchline.webp"
+    ],
+    "video": "/previews/touchline.mp4",
+    "github": "https://github.com/jennyy08/Touchline"
   },
+  {
+    "title": "Local Voice",
+    "tag": "Civic tech",
+    "description": "Pin a neighbourhood issue on a shared map, vote on reports, and follow their progress.",
+    "year": "2026",
+    "accent": "blue",
+    "images": [
+      "/images/local-voice-home.png"
+    ],
+    "github": "https://github.com/jennyy08/Local-Voice",
+    "video": "/previews/local-voice.mp4",
+    "live": "https://local-voice-omega.vercel.app"
+  },
+  {
+    "title": "Auri",
+    "tag": "Wearable hardware",
+    "description": "A wristband listens for environmental sounds and spoken names, then alerts the wearer with a light or vibration. Choose which sounds matter at home, outside, or while asleep.",
+    "year": "2026",
+    "accent": "blue",
+    "images": [
+      "/previews/auri.webp"
+    ],
+    "video": "/previews/auri.mp4",
+    "github": "https://github.com/lindaeq/auri",
+    "devpost": "https://devpost.com/software/auri-gvp74e"
+  },
+  {
+    "title": "NBA Archetype Studio",
+    "tag": "Sports analytics",
+    "description": "Compare NBA players by playing style, then take a lineup onto a virtual court. Draw routes and run the play to see how the defense reacts.",
+    "year": "2026",
+    "accent": "blue",
+    "images": [
+      "/images/nba-play-lab.png"
+    ],
+    "github": "https://github.com/jennyy08/nba-archetypes-app",
+    "video": "/previews/nba.mp4"
+  }
 ];
 
 export const interests = [

@@ -107,3 +107,14 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 .story-copy{--intro-zoom:calc(1.32 - .32 * var(--descent));scale:var(--intro-zoom);transform-origin:50% 50%;width:calc(100% / var(--intro-zoom));margin-inline:auto}
 @media(max-width:600px){.story-copy{--intro-zoom:calc(1.17 - .17 * var(--descent))}}
 @media(prefers-reduced-motion:reduce){.story-copy{scale:1;width:100%}}
+
+.work-gallery{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:46px 26px}
+.work-card{grid-column:span 3;min-width:0}.work-aircad{grid-column:span 4}.work-bumpitup{grid-column:span 2}
+.work-media{display:block;position:relative;width:100%;aspect-ratio:16/9;border:0;border-radius:12px;overflow:hidden;background:#dde5de;padding:0}
+.work-aircad .work-media,.work-bumpitup .work-media{aspect-ratio:auto;height:clamp(240px,28vw,340px)}
+.work-media img,.work-media video{width:100%;height:100%;display:block;object-fit:contain}.work-media video{position:absolute;inset:0;opacity:0}.work-media[data-playing=true] video{opacity:1;background:inherit}.work-aircad .work-media{background:#181b20}.work-bumpitup .work-media{background:#f6e6e7}.work-touchline .work-media{background:#191f1a}.work-auri .work-media{background:#e5e2d9}.work-auri img{object-fit:contain}
+.work-play{position:absolute;bottom:10px;right:10px;border-radius:14px;background:#142420dc;color:white;font-size:11px;padding:6px 10px}
+.work-meta{font:10px monospace;text-transform:uppercase;letter-spacing:1.5px;color:#536b5c;margin:16px 0 8px}.work-card h3{font:30px Georgia,serif;letter-spacing:-1px;margin:0}.work-award{display:inline-block;color:var(--accent);font-size:12px;margin-top:7px}.work-card p{font-size:15px;line-height:1.6;color:#506052;margin:8px 0 0}
+@media(max-width:650px){.work-gallery{display:flex;flex-direction:column;gap:32px}.work-aircad .work-media{height:auto;aspect-ratio:16/9}.work-bumpitup .work-media{height:320px}}
+
+.work-title-links,.work-title-links>div{display:flex;align-items:center;gap:6px}.work-title-links{justify-content:space-between}.work-title-links a{display:grid;place-items:center;width:34px;height:34px;color:#52655b;border-radius:50%}.work-title-links a:hover{background:#e6ebdf;color:var(--accent)}.work-title-links svg{width:19px;height:19px}
