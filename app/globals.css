@@ -135,3 +135,9 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 .work-bumpitup .work-media video{object-fit:contain;clip-path:inset(0 round 11% / 5%)}
 @media(prefers-reduced-motion:no-preference){.retriever-run svg{animation:lab-bound .23s ease-in-out infinite alternate}.dog-paws,.dog-stride{animation-duration:.23s}}
 @keyframes lab-bound{from{transform:translateY(1px) rotate(2deg)}to{transform:translateY(-7px) rotate(-3deg)}}
+
+.experience + .experience{margin-top:30px;padding-top:26px;border-top:1px solid #d7dece}.experience img.orbital-logo{padding:0;object-fit:cover;border-radius:12px}
+
+.experience img.nokia-square{padding:0;object-fit:cover;border-radius:12px}
+.site-entered>.field-kits{position:fixed;z-index:30;bottom:calc(18px + env(safe-area-inset-bottom));right:18px}
+.site-entered .contact{padding-bottom:90px}

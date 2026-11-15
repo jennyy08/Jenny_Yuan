@@ -79,6 +79,7 @@ export const projects: Project[] = [
   },
   {
     "title": "Local Voice",
+    "award": "CANConnect Youth Microgrant Recipient",
     "tag": "Civic tech",
     "description": "Pin a neighbourhood issue on a shared map, vote on reports, and follow their progress.",
     "year": "2026",
