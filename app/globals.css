@@ -127,3 +127,7 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Ar
 .site-entered .contact{padding-bottom:90px}
 
 .school-line:hover{text-decoration:none}
+/* Render celebration above the whole scene, outside the transformed pitch. */
+.confetti{position:fixed;inset:0;z-index:30}
+.confetti i{animation-duration:2.7s}
+@keyframes confetti-fall{from{translate:0 -20px;rotate:0deg}to{translate:var(--drift) calc(100dvh + 50px);rotate:560deg}}

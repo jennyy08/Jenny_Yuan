@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
 import { projects, profile } from '../lib/data';
 const kits = [
  {name:'Real Madrid', label:'The classic', color:'#f5f3eb', trim:'#333d49', accent:'#526d99', crest:'madrid'},
@@ -35,7 +36,7 @@ function GoalNet({side}: {side:'left'|'right'}) {
 }
 function Pitch({kit}: {kit:number}) {
  const field=useRef<HTMLDivElement>(null);
- const [ball,setBall]=useState({x:40,y:74,turn:0,ms:0,angle:0});
+ const [ball,setBall]=useState({x:40,y:74,turn:0,ms:0,angle:0,scale:1});
  const [calling,setCalling]=useState(-1);
  const [scored,setScored]=useState(false);
  const locked=useRef(false);
@@ -50,8 +51,8 @@ function Pitch({kit}: {kit:number}) {
   const node=field.current;
   if(!node)return;
   const ballNode=node.querySelector('.free-ball') as HTMLElement;
-  // Keep the ball's whole footprint inside the tapered pitch. Goal shots
-  // stop at the mouth, rather than targeting a point through the rear mesh.
+  // Approach the middle of the mouth first so shots cannot cross a side net.
+  // Regular passes stay within the tapered field.
   const radius=ballNode.offsetWidth/2+2;
   if(goal)y=47;
   y=Math.max(7+radius/node.clientHeight*100,Math.min(92.5-radius/node.clientHeight*100,y));
@@ -63,12 +64,25 @@ function Pitch({kit}: {kit:number}) {
   const dy=node.clientHeight*y/100-parseFloat(getComputedStyle(ballNode).top);
   const distance=Math.hypot(dx,dy);
   const ms=Math.min(1900,290+distance*1.1);
-  setBall(old=>({x,y,turn:old.turn+Math.min(3.25, Math.max(.18,distance/245)),ms,angle:Math.atan2(dy,dx)*180/Math.PI}));
+  setBall(old=>({x,y,turn:old.turn+Math.min(3.25, Math.max(.18,distance/245)),ms,angle:Math.atan2(dy,dx)*180/Math.PI,scale:1}));
   setCalling(-1);
   if(goal){
    locked.current=true;
-   timers.current.push(setTimeout(()=>setScored(true),ms));
-   timers.current.push(setTimeout(()=>{setScored(false);setBall({x:40,y:74,turn:0,ms:0,angle:0});locked.current=false},ms+2400));
+   const shootingLeft=x<50;
+   // The net is 62 SVG units deep. Stop halfway inside, clear of the rear mesh.
+   const insideX=shootingLeft?endLine-31/14:100-endLine+31/14;
+   const entryDistance=Math.abs(insideX-x)*node.clientWidth/100;
+   const entryMs=Math.min(650,320+entryDistance*1.1);
+   const netDepth=62/1400*node.clientWidth;
+   const lineSlope=(205/513)*(node.clientWidth/1400)/(node.clientHeight/600);
+   const scale=Math.min(1,netDepth*.8/(ballNode.offsetWidth*(1+lineSlope)));
+   timers.current.push(setTimeout(()=>{
+    setBall(old=>({...old,x:insideX,ms:entryMs,scale,
+     turn:old.turn+entryDistance/245,angle:shootingLeft?180:0}));
+   },ms));
+   // Celebrate only once the ball has travelled across the line into the net.
+   timers.current.push(setTimeout(()=>setScored(true),ms+entryMs));
+   timers.current.push(setTimeout(()=>{setScored(false);setBall({x:40,y:74,turn:0,ms:0,angle:0,scale:1});locked.current=false},ms+entryMs+3200));
   }
  }
  return <div className="field-world">
@@ -87,9 +101,9 @@ function Pitch({kit}: {kit:number}) {
    <button className="goal goal-left" aria-label="Shoot into the left goal" onClick={()=>pass(8,43,true)}><GoalNet side="left"/></button><button className="goal goal-right" aria-label="Shoot into the right goal" onClick={()=>pass(92,43,true)}><GoalNet side="right"/></button>
    {[['18','28'],['38','61'],['57','24'],['76','59'],['79','22']].map(([x,y],i)=><button key={i} type="button" className={`field-player player-${i}`} aria-label={`Pass to player ${[7,10,8,11,3][i]}`} onClick={()=>pass(Number(x)+2,Number(y)+13)} style={{left:`${x}%`,top:`${y}%`,'--skin':['#dba67d','#a76e4b','#f2c7a2','#c68b5f','#edba8d'][i]} as CSSProperties}>{calling===i && !scored && <span className="player-bubble">{i%2?"I’m open!":"Pass to me!"}</span>}<span className="pixel-head"/><span className="pixel-shirt"><small>{[7,10,8,11,3][i]}</small></span><span className="pixel-legs"/><span className="player-shadow"/></button>)}
    <div className="ball-traces" aria-hidden="true">{[3,2,1].map(n=><i key={n} style={{left:`${ball.x}%`,top:`${ball.y}%`,width:5+n,height:5+n,opacity:.85-n*.13,transitionDuration:`${ball.ms}ms`,transitionDelay:`${ball.ms?n*28:0}ms`}}/>)}</div>
-   <div className="football free-ball" aria-hidden="true" style={{left:`${ball.x}%`,top:`${ball.y}%`,transform:'translate(-50%,-50%)',transitionDuration:`${ball.ms}ms`}}><svg style={{transform:`rotate(${ball.turn*360}deg)`,transitionDuration:`${ball.ms}ms`}} viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#fffdf4" stroke="#26362d" strokeWidth="1.5"/><g fill="#25342e" stroke="#25342e" strokeWidth=".6">{[0,72,144,216,288].map(d=><g key={d} transform={`rotate(${d} 16 16)`}><path d="M12 2Q16 0 20 2L19 5H14Z"/><path d="M16 5L16 10" fill="none"/></g>)}<path d="M16 10L22 14L20 21H12L10 14Z"/></g></svg></div>
+   <div className="football free-ball" aria-hidden="true" style={{left:`${ball.x}%`,top:`${ball.y}%`,transform:`translate(-50%,-50%) scale(${ball.scale})`,transitionDuration:`${ball.ms}ms`}}><svg style={{transform:`rotate(${ball.turn*360}deg)`,transitionDuration:`${ball.ms}ms`}} viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#fffdf4" stroke="#26362d" strokeWidth="1.5"/><g fill="#25342e" stroke="#25342e" strokeWidth=".6">{[0,72,144,216,288].map(d=><g key={d} transform={`rotate(${d} 16 16)`}><path d="M12 2Q16 0 20 2L19 5H14Z"/><path d="M16 5L16 10" fill="none"/></g>)}<path d="M16 10L22 14L20 21H12L10 14Z"/></g></svg></div>
    <div className="goal-announcement" role="status" aria-live="polite">{scored && <span>You scored! <small>What a finish.</small></span>}</div>
-   {scored && <div className="confetti" aria-hidden="true">{Array.from({length:36},(_,i)=><i key={i} style={{left:`${(i*29)%100}%`,'--fall-delay':`${(i%7)*.07}s`,'--confetti-color':i%3===0?'var(--kit)':i%3===1?'var(--trim)':'#fff4b8','--drift':`${i%2?80:-80}px`} as CSSProperties}/>)}</div>}
+   {scored && createPortal(<div className="confetti" aria-hidden="true">{Array.from({length:36},(_,i)=><i key={i} style={{left:`${(i*29)%100}%`,'--fall-delay':`${(i%7)*.07}s`,'--confetti-color':i%3===0?kits[kit].color:i%3===1?kits[kit].trim:'#fff4b8','--drift':`${i%2?80:-80}px`} as CSSProperties}/>)}</div>,document.body)}
    <div className="corner-flag flag-left flag-near" aria-hidden="true"/><div className="corner-flag flag-right flag-near" aria-hidden="true"/><div className="corner-flag flag-left flag-far" aria-hidden="true"/><div className="corner-flag flag-right flag-far" aria-hidden="true"/>
    <a className="scroll-field" href="#experience" aria-label="Scroll to experience"><span aria-hidden="true">↓</span></a>
   </div>
