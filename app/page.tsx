@@ -50,11 +50,19 @@ function Pitch({kit}: {kit:number}) {
   const node=field.current;
   if(!node)return;
   const ballNode=node.querySelector('.free-ball') as HTMLElement;
-  x=Math.max(3,Math.min(97,x));y=Math.max(6,Math.min(88,y));
+  // Keep the ball's whole footprint inside the tapered pitch. Goal shots
+  // stop at the mouth, rather than targeting a point through the rear mesh.
+  const radius=ballNode.offsetWidth/2+2;
+  if(goal)y=47;
+  y=Math.max(7+radius/node.clientHeight*100,Math.min(92.5-radius/node.clientHeight*100,y));
+  const endLine=(230-(y*6-42)*205/513)/14;
+  const inset=radius/node.clientWidth*100 + radius/node.clientHeight*100*6*205/513/14;
+  const left=endLine+inset;
+  x=goal?(x<50?left:100-left):Math.max(left,Math.min(100-left,x));
   const dx=node.clientWidth*x/100-parseFloat(getComputedStyle(ballNode).left);
   const dy=node.clientHeight*y/100-parseFloat(getComputedStyle(ballNode).top);
   const distance=Math.hypot(dx,dy);
-  const ms=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:Math.min(1900,290+distance*1.1);
+  const ms=Math.min(1900,290+distance*1.1);
   setBall(old=>({x,y,turn:old.turn+Math.min(3.25, Math.max(.18,distance/245)),ms,angle:Math.atan2(dy,dx)*180/Math.PI}));
   setCalling(-1);
   if(goal){
@@ -92,13 +100,10 @@ function Intro({onField=false}:{onField?:boolean}) {
  const Name=onField?"h2":"h1";
  const [word,setWord]=useState(0);
  useEffect(()=>{
-  const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
-  let timer:ReturnType<typeof setInterval>|undefined;
-  function sync(){if(timer)clearInterval(timer);if(!motion.matches)timer=setInterval(()=>setWord(current=>(current+1)%introWords.length),3000);else setWord(0)}
-  sync();motion.addEventListener('change',sync);
-  return ()=>{if(timer)clearInterval(timer);motion.removeEventListener('change',sync)};
+  const timer=setInterval(()=>setWord(current=>(current+1)%introWords.length),3000);
+  return ()=>clearInterval(timer);
  },[]);
- return <div className="field-bio"><Name>Jenny Yuan</Name><a className="school-line" href={profile.schoolUrl} target="_blank" rel="noopener noreferrer">Computer Science @ University of Waterloo</a><p className="rotating-line" aria-label="Always learning, building, experimenting, exploring, and improving."><span aria-hidden="true">Always <span className="word-slot"><span key={word} className="rotating-word">{introWords[word]}.</span></span></span></p><a className="seeking-line" href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Seeking Summer 2027 internship opportunities</a></div>
+ return <div className="field-bio"><Name>Jenny Yuan</Name><div className="school-line">Computer Science @ University of Waterloo</div><p className="rotating-line" aria-label="Always learning, building, experimenting, exploring, and improving."><span aria-hidden="true">Always <span className="word-slot"><span key={word} className="rotating-word">{introWords[word]}.</span></span></span></p><a className="seeking-line" href={`mailto:${profile.email}`} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Seeking Summer 2027 internship opportunities</a></div>
 }
 function KitBar({kit,choose}:{kit:number;choose:(i:number)=>void}){
  const [preview,setPreview]=useState<number|null>(null);
@@ -116,7 +121,7 @@ function WorkCard({p}:{p:(typeof projects)[number]}){
  const start=()=>{ref.current?.play().catch(()=>setPlaying(false))};
  const media=<><img src={p.images[0]} alt={p.title+' preview'} loading="lazy"/>{p.video && <><video ref={ref} src={p.video} preload="none" muted playsInline loop aria-hidden="true" onPlaying={()=>setPlaying(true)} onPause={()=>setPlaying(false)}/><span className="work-play">{playing?'Ⅱ Pause':'▷ Preview'}</span></>}</>;
  return <article className={'work-card work-'+p.title.split(' ')[0].toLowerCase()}>
- {p.video?<button type="button" className="work-media" data-playing={playing} onPointerEnter={e=>{if(e.pointerType==='mouse'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)start()}} onPointerLeave={e=>{if(e.pointerType==='mouse')stop()}} onClick={()=>playing?stop():start()} aria-label={(playing?'Pause ':'Play ')+p.title+' preview'}>{media}</button>:<div className="work-media">{media}</div>}
+ {p.video?<button type="button" className="work-media" data-playing={playing} onPointerEnter={e=>{if(e.pointerType==='mouse')start()}} onPointerLeave={e=>{if(e.pointerType==='mouse')stop()}} onClick={()=>playing?stop():start()} aria-label={(playing?'Pause ':'Play ')+p.title+' preview'}>{media}</button>:<div className="work-media">{media}</div>}
  <div className="work-meta">{p.tag} · {p.year}</div><div className="work-title-links"><h3>{p.title}</h3><div>{([['GitHub',p.github],['Devpost',p.devpost],['Live demo',p.live]] as const).map(([label,url])=>url&&<a key={label} href={url} target="_blank" rel="noopener noreferrer" title={label} aria-label={p.title+' · '+label}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{label==='Live demo'?<path d="M14 3h7v7m0-7L10 14m0-10H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-5"/>:label==='Devpost'?<><path d="M6 3h12l5 9-5 9H6l-5-9z"/><path d="M9 7h3a5 5 0 0 1 0 10H9z"/></>:<path d="M9 21v-3c-4 1-4-2-6-2m12 5v-3.4c0-1-.3-1.7-.9-2.1 3.1-.4 6.4-1.5 6.4-6.8 0-1.5-.5-2.7-1.4-3.6.2-.6.6-1.8-.1-3.2 0 0-1.2-.4-3.8 1.4a13 13 0 0 0-6.6 0C6 1.5 4.8 1.9 4.8 1.9c-.7 1.4-.3 2.6-.1 3.2a5 5 0 0 0-1.4 3.6c0 5.3 3.3 6.4 6.4 6.8-.5.4-.8 1.1-.8 2.1"/>}</svg></a>)}</div></div>{p.award&&<strong className="work-award">{p.award}</strong>}<p>{p.description}</p></article>
 }
 export default function Home(){
@@ -129,7 +134,7 @@ export default function Home(){
    el.style.setProperty('--descent',String(progress));
    el.dataset.dogRun=String(progress>.55);
    el.style.setProperty('--approach',String(Math.sin(Math.PI*Math.max(0,(progress-.25)/.75))));
-   el.dataset.landed=String(progress>.85 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+   el.dataset.landed=String(progress>.85);
   }
   update();window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);
   return ()=>{window.removeEventListener('scroll',update);window.removeEventListener('resize',update)};
